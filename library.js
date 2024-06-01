@@ -49,29 +49,19 @@ function makeBookDisplay(book) {
         bookNode.appendChild(div);
     });
     bookList.appendChild(bookNode);
+    console.log(myLibrary)
 }
 
 // Dialog Add popup
 
 const addButton = document.querySelector(".add");
 const formDialog = document.querySelector(".form-dialog");
-const outputBox = document.querySelector("output")
-const confirmBtn = document.querySelector(".confirm")
-const addBookForm = document.querySelector(".add-book")
+const confirmBtn = document.querySelector(".confirm");
+const addBookForm = document.querySelector(".add-book");
 
 addButton.addEventListener("click", () => {
     formDialog.showModal();
 })
-
-formDialog.addEventListener("close", (e) => {
-    outputBox.value =
-      formDialog.returnValue === "default"
-        ? "No return value."
-        : `ReturnValue: ${formDialog.returnValue}.`; // Have to check for "default" rather than empty string
-});
-
-
-
 
 confirmBtn.addEventListener("click", (event) => {
     event.preventDefault(); // We don't want to submit this fake form
@@ -80,14 +70,19 @@ confirmBtn.addEventListener("click", (event) => {
         document.querySelector("#pages").value, document.querySelector("#has-read").value);
     addBookToLibrary(book);
     makeBookDisplay(book);
+    formDialog.close();
 }); 
 
 
 
-let book1 = new Book("Zoolander", "Bob Ross", 293, false)
-let book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, true)
+const book1 = new Book("Zoolander", "Bob Ross", 293, false)
+const book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, true)
+const book3 = new Book("Crime and Punishment", "Fyodor Dostoevsky", 423, true)
+const book4 = new Book("House of the Spirits", "Isabel Allende", 372, true)
 
 addBookToLibrary(book1)
 addBookToLibrary(book2)
+addBookToLibrary(book3)
+addBookToLibrary(book4)
 
 displayBooks();
