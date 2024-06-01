@@ -1,6 +1,8 @@
 
 const myLibrary = []
+const bookList = document.querySelector(".books")
 
+// Book constructor
 function Book(title, author, pages, hasRead) {
     this.title = title;
     this.author = author;
@@ -16,16 +18,24 @@ function Book(title, author, pages, hasRead) {
     }
 }
 
-
+// Features for storing books in array
 function addBookToLibrary(book) {
-    myLibrary.push(book)
+    myLibrary.push(book);
 }
 
+function readBook(hasRead) {
+    readStatus = "not read it yet";
+    if (hasRead) {
+        readStatus = "read it";
+    }
+    return readStatus;
+}
+
+
+// Functions for updating the GUI
 function displayBooks() {
-    const list = document.querySelector(".books")
     myLibrary.forEach(book => {
-        const bookNode = makeBookDisplay(book);
-        list.appendChild(bookNode);
+        makeBookDisplay(book);
     });
 }
 
@@ -38,27 +48,44 @@ function makeBookDisplay(book) {
         div.innerHTML = `${prop}: ${book[prop]}`;
         bookNode.appendChild(div);
     });
-    return bookNode;
+    bookList.appendChild(bookNode);
 }
 
-function createDiv(text) {
-    const element = document.createElement("div");
-    element.className = text;
+// Dialog Add popup
 
-}
+const addButton = document.querySelector(".add");
+const formDialog = document.querySelector(".form-dialog");
+const outputBox = document.querySelector("output")
+const confirmBtn = document.querySelector(".confirm")
+const addBookForm = document.querySelector(".add-book")
+
+addButton.addEventListener("click", () => {
+    formDialog.showModal();
+})
+
+formDialog.addEventListener("close", (e) => {
+    outputBox.value =
+      formDialog.returnValue === "default"
+        ? "No return value."
+        : `ReturnValue: ${formDialog.returnValue}.`; // Have to check for "default" rather than empty string
+});
 
 
-function readBook(hasRead) {
-    readStatus = "not read it yet";
-    if (hasRead) {
-        readStatus = "read it";
-    }
-    return readStatus;
-}
+
+
+confirmBtn.addEventListener("click", (event) => {
+    event.preventDefault(); // We don't want to submit this fake form
+
+    const book = new Book(document.querySelector("#title").value,document.querySelector("#author").value, 
+        document.querySelector("#pages").value, document.querySelector("#has-read").value);
+    addBookToLibrary(book);
+    makeBookDisplay(book);
+}); 
+
 
 
 let book1 = new Book("Zoolander", "Bob Ross", 293, false)
-let book2 = new Book("Mr. Brightside", "Barrack Obama", 387, true)
+let book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, true)
 
 addBookToLibrary(book1)
 addBookToLibrary(book2)

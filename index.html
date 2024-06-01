@@ -8,11 +8,35 @@
 <body>
     <h1>Library</h1>
     <button class="add">Add book</button>
+    <dialog class="form-dialog">
+        <form action="" method="dialog" class="add-book">
+            <label for="name">Book Title: </label>
+            <input type="text" name="title" id="title"/>
+            <br>
+            <label for="author">Author: </label>
+            <input type="text" name="author" id="author"/>
+            <br>
+            <label for="pages">Page Count: </label>
+            <input type="text" name="pages" id="pages"/>
+            <br>
+            <label for="has-read">Have you read it?
+                <select name="has-read" id="has-read">
+                    <option value="default">Choose...</option>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </label>
+            <br>
+            <button type="submit" class="confirm">Confirm</button>
+            <button class="cancel" formMethod="dialog">Cancel</button>
+        </form>
+    </dialog>
     <div class="display">
         <ul class="books">
-            
+
         </ul>
     </div>
+    <output></output>
 </body>
 <script src="library.js"></script>
 </html>
