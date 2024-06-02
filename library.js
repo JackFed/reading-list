@@ -8,6 +8,7 @@ function Book(title, author, pages, hasRead) {
     this.author = author;
     this.pages = pages;
     this.hasRead = hasRead;
+    this.index = 0;
     this.info = function() {
         readStatus = readBook(hasRead)
         return(`${this.title} is written by, ${this.author} and is ${this.pages} long. You have ${readStatus}.`);
@@ -20,6 +21,9 @@ function Book(title, author, pages, hasRead) {
 
 // Features for storing books in array
 function addBookToLibrary(book) {
+    if (myLibrary.length > 0) {
+        book.index = myLibrary.length;
+    }
     myLibrary.push(book);
 }
 
@@ -41,6 +45,10 @@ function displayBooks() {
 
 function makeBookDisplay(book) {
     const bookNode = document.createElement("li");
+    // Add the data attribute to relate the html to the library array.
+    bookNode.setAttribute("data-index", book.index);
+
+    // Add the Visible book attributes to the tile.
     const keys = Object.keys(book).slice(0,4);
     keys.forEach(prop => { 
         const div = document.createElement("div");
@@ -48,8 +56,38 @@ function makeBookDisplay(book) {
         div.innerHTML = `${prop}: ${book[prop]}`;
         bookNode.appendChild(div);
     });
+
+    const closeBtn = makeButtonDisplay();
+    bookNode.appendChild(closeBtn);
+
     bookList.appendChild(bookNode);
-    console.log(myLibrary)
+}
+
+function makeButtonDisplay() {
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "remove";
+    closeBtn.innerHTML = "Remove";
+    closeBtn.onclick= removeBook;
+    return closeBtn
+}
+
+// Removing books functions
+
+// Find the parent of the button clicked
+// Remove from both html and array using data-index
+function removeBook(event) {
+    const bookElement = event.target.closest("li")
+    bookElement.remove();
+    removeByIndex(Number(bookElement.dataset.index));
+}
+
+function removeByIndex(index) {
+    for (let i=0; i < myLibrary.length; i ++) {
+        if (myLibrary[i].index === index) {
+            myLibrary.splice(i, 1);
+            return 1;
+        }
+    }
 }
 
 // Dialog Add popup
@@ -74,9 +112,9 @@ confirmBtn.addEventListener("click", (event) => {
 }); 
 
 
-
+// Sample books to see layout
 const book1 = new Book("Zoolander", "Bob Ross", 293, false)
-const book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, true)
+const book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, false)
 const book3 = new Book("Crime and Punishment", "Fyodor Dostoevsky", 423, true)
 const book4 = new Book("House of the Spirits", "Isabel Allende", 372, true)
 
