@@ -55,39 +55,47 @@ class Book {
 }
 
 // Functions for updating the GUI
-function displayBooks() {
-    myLibrary.getBookList().forEach(book => {
-        makeBookDisplay(book);
-    });
+class viewBookList {
+    // Expect divName = ".'class name'"
+    constructor (divName) {
+        this.bookDiv = document.querySelector(divName)
+    }
+
+    displayBooks(myLibrary) {
+        myLibrary.getBookList().forEach(book => {
+            console.log('hi')
+            this.addToDisplay(book);
+        });
+    }
+    
+    addToDisplay(book) {
+        const bookNode = document.createElement("li");
+        // Add the data attribute to relate the html to the library array.
+        bookNode.setAttribute("data-index", book.getIndex());
+    
+        // Add the Visible book attributes to the tile.
+        const keys = Object.keys(book.getBook());
+        keys.forEach(prop => { 
+            const div = document.createElement("div");
+            div.className = prop;
+            div.innerHTML = `${prop}: ${book[prop]}`;
+            bookNode.appendChild(div);
+        });
+    
+        const closeBtn = this.makeButtonDisplay();
+        bookNode.appendChild(closeBtn);
+        this.bookDiv.appendChild(bookNode);
+    }
+    
+    makeButtonDisplay() {
+        const closeBtn = document.createElement("button");
+        closeBtn.className = "remove";
+        closeBtn.innerHTML = "Remove";
+        closeBtn.onclick= removeScreenBook;
+        return closeBtn
+    }
 }
 
-function makeBookDisplay(book) {
-    const bookNode = document.createElement("li");
-    // Add the data attribute to relate the html to the library array.
-    bookNode.setAttribute("data-index", book.getIndex());
-
-    // Add the Visible book attributes to the tile.
-    const keys = Object.keys(book.getBook());
-    keys.forEach(prop => { 
-        const div = document.createElement("div");
-        div.className = prop;
-        div.innerHTML = `${prop}: ${book[prop]}`;
-        bookNode.appendChild(div);
-    });
-
-    const closeBtn = makeButtonDisplay();
-    bookNode.appendChild(closeBtn);
-
-    bookList.appendChild(bookNode);
-}
-
-function makeButtonDisplay() {
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "remove";
-    closeBtn.innerHTML = "Remove";
-    closeBtn.onclick= removeScreenBook;
-    return closeBtn
-}
 
 // Removing books functions
 
@@ -116,12 +124,12 @@ confirmBtn.addEventListener("click", (event) => {
     const book = new Book(document.querySelector("#title").value,document.querySelector("#author").value, 
         document.querySelector("#pages").value, document.querySelector("#has-read").value);
     myLibrary.addBookToLibrary(book);
-    makeBookDisplay(book);
+    bookDiv.addToDisplay(book);
     formDialog.close();
 }); 
 
 
-const bookList = document.querySelector(".books")
+
 
 // Sample books to see layout
 const book1 = new Book("Zoolander", "Bob Ross", 293, false)
@@ -136,4 +144,5 @@ myLibrary.addBookToLibrary(book2)
 myLibrary.addBookToLibrary(book3)
 myLibrary.addBookToLibrary(book4)
 
-displayBooks();
+const bookDiv = new viewBookList(".books")
+bookDiv.displayBooks(myLibrary);
