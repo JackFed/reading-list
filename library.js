@@ -1,12 +1,13 @@
+// Model
 class Library {
     constructor() {
-        this.bookList = []
+        this.bookList = [];
     }
 
     // Features for storing books in array
     addBookToLibrary(book) {
         if (this.bookList.length > 0) {
-            book.index = this.bookList.length;
+            book.setIndex(this.bookList.length);
         }
         this.bookList.push(book);
     }
@@ -16,46 +17,42 @@ class Library {
     }
 
     removeBook(index) {
-        for (let i=0; i < this.length; i ++) {
-            if (this.bookList[i].index === index) {
+        for (let i=0; i < this.bookList.length; i ++) {
+            const book = this.bookList[i]
+            if (book.getIndex() === index) {
                 this.bookList.splice(i, 1);
-                return 1;
             }
         }
     }
 
-    showBookList() {
-        console.log(this.bookList);
-    }
 }
-
-const bookList = document.querySelector(".books")
-
-// Book constructor
-function Book(title, author, pages, hasRead) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.hasRead = hasRead;
-    this.index = 0;
-    this.info = function() {
-        readStatus = readBook(hasRead)
-        return(`${this.title} is written by, ${this.author} and is ${this.pages} long. You have ${readStatus}.`);
-    };
-    this.prettyPrint = function() {
-        readStatus = readBook(hasRead)
-        return (`Title: ${this.title}\nAuthor: ${this.author}\nPage count: ${this.pages} pages\nRead Status: You have ${readStatus}.`);
+class Book {
+    constructor(title, author, pages, hasRead) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.hasRead = hasRead;
+        this.index = 0;
     }
-}
 
-function readBook(hasRead) {
-    readStatus = "not read it yet";
-    if (hasRead) {
-        readStatus = "read it";
+    getIndex = () => this.index;
+
+    setIndex = (index) => this.index = index;
+
+    getBook = () => {
+        return {
+            title: this.title,
+            author: this.author,
+            pages: this.pages,
+            hasRead: this.hasRead
+        }
     }
-    return readStatus;
-}
 
+    getReadStatus = () => this.hasRead;
+
+    setReadStatus = (readStatus) => this.hasRead = readStatus;
+
+}
 
 // Functions for updating the GUI
 function displayBooks() {
@@ -67,10 +64,10 @@ function displayBooks() {
 function makeBookDisplay(book) {
     const bookNode = document.createElement("li");
     // Add the data attribute to relate the html to the library array.
-    bookNode.setAttribute("data-index", book.index);
+    bookNode.setAttribute("data-index", book.getIndex());
 
     // Add the Visible book attributes to the tile.
-    const keys = Object.keys(book).slice(0,4);
+    const keys = Object.keys(book.getBook());
     keys.forEach(prop => { 
         const div = document.createElement("div");
         div.className = prop;
@@ -88,7 +85,7 @@ function makeButtonDisplay() {
     const closeBtn = document.createElement("button");
     closeBtn.className = "remove";
     closeBtn.innerHTML = "Remove";
-    closeBtn.onclick= removeBook;
+    closeBtn.onclick= removeScreenBook;
     return closeBtn
 }
 
@@ -96,7 +93,7 @@ function makeButtonDisplay() {
 
 // Find the parent of the button clicked
 // Remove from both html and array using data-index
-function removeBook(event) {
+function removeScreenBook(event) {
     const bookElement = event.target.closest("li")
     bookElement.remove();
     myLibrary.removeBook(Number(bookElement.dataset.index));
@@ -123,6 +120,8 @@ confirmBtn.addEventListener("click", (event) => {
     formDialog.close();
 }); 
 
+
+const bookList = document.querySelector(".books")
 
 // Sample books to see layout
 const book1 = new Book("Zoolander", "Bob Ross", 293, false)

@@ -14,6 +14,8 @@ Library (Contains Books)
 Book
   -contains book attributes
   -get and setters for hasRead status
+  -Get book info (author, pages, hasRead)
+  -Get index, set index
 
 View classes
 bookDisplay
@@ -21,9 +23,9 @@ bookDisplay
   -makeBookDisplay
   -removeBookDisplay
 formDisplay
-  -makeBtnDisplayRemove
   -makeDialogDisplay
-//
+  -makeBtnDisplayRemove
+Controller
 addEventListeners
   -showModal (Show form) on formDialog
   -formSubmit (create new book) on confirmBtn
