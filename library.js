@@ -25,9 +25,22 @@ class Library {
         }
     }
 
+    initializeSampleBooks() {
+        const sampleBooks = [
+            { title: "Zoolander", author: "Bob Ross", pages: 293, hasRead: false },
+            { title: "Grapes of Wrath", author: "John Steinbeck", pages: 487, hasRead: false },
+            { title: "Crime and Punishment", author: "Fyodor Dostoevsky", pages: 423, hasRead: true },
+            { title: "House of the Spirits", author: "Isabel Allende", pages: 372, hasRead: true }
+        ];
+
+        sampleBooks.forEach(bookData => {
+            const book = new Book(bookData);
+            this.addBookToLibrary(book);
+        });
+    }
 }
 class Book {
-    constructor(title, author, pages, hasRead) {
+    constructor({title, author, pages, hasRead}) {
         this.title = title;
         this.author = author;
         this.pages = pages;
@@ -63,7 +76,6 @@ class viewBookList {
 
     displayBooks(myLibrary) {
         myLibrary.getBookList().forEach(book => {
-            console.log('hi')
             this.addToDisplay(book);
         });
     }
@@ -82,12 +94,12 @@ class viewBookList {
             bookNode.appendChild(div);
         });
     
-        const closeBtn = this.makeButtonDisplay();
+        const closeBtn = this.makeRemoveButtonDisplay();
         bookNode.appendChild(closeBtn);
         this.bookDiv.appendChild(bookNode);
     }
     
-    makeButtonDisplay() {
+    makeRemoveButtonDisplay() {
         const closeBtn = document.createElement("button");
         closeBtn.className = "remove";
         closeBtn.innerHTML = "Remove";
@@ -107,42 +119,50 @@ function removeScreenBook(event) {
     myLibrary.removeBook(Number(bookElement.dataset.index));
 }
 
-// Dialog Add popup
+// Library Controller class
+class LibraryController {
+    constructor(myLibrary, bookListView) {
+        this.myLibrary = myLibrary;
+        this.bookListView = bookListView;
+        this.formDialog = document.querySelector(".form-dialog");
+        this.addEventListeners();
+    }
 
-const addButton = document.querySelector(".add");
-const formDialog = document.querySelector(".form-dialog");
-const confirmBtn = document.querySelector(".confirm");
-const addBookForm = document.querySelector(".add-book");
+    addEventListeners() {
+        const addButton = document.querySelector(".add");
+        addButton.addEventListener("click", this.showForm.bind(this));
+        
+        const confirmBtn = document.querySelector(".confirm");  
+        confirmBtn.addEventListener("click", this.onSubmit.bind(this)); 
+    }
 
-addButton.addEventListener("click", () => {
-    formDialog.showModal();
-})
+    showForm() {
+        this.formDialog.showModal();
+    }
 
-confirmBtn.addEventListener("click", (event) => {
-    event.preventDefault(); // We don't want to submit this fake form
+    onSubmit(event) {
+        event.preventDefault(); // We don't want to submit this fake form
+        const bookInfo = {
+            title: document.querySelector("#title").value,
+            author: document.querySelector("#author").value,
+            pages: document.querySelector("#pages").value,
+            hasRead: document.querySelector("#has-read").value
+        }
+        const book = new Book(bookInfo);
+        this.myLibrary.addBookToLibrary(book);
+        this.bookListView.addToDisplay(book);
+        
+        this.formDialog.close();
+    }
 
-    const book = new Book(document.querySelector("#title").value,document.querySelector("#author").value, 
-        document.querySelector("#pages").value, document.querySelector("#has-read").value);
-    myLibrary.addBookToLibrary(book);
-    bookDiv.addToDisplay(book);
-    formDialog.close();
-}); 
 
-
+}
 
 
 // Sample books to see layout
-const book1 = new Book("Zoolander", "Bob Ross", 293, false)
-const book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, false)
-const book3 = new Book("Crime and Punishment", "Fyodor Dostoevsky", 423, true)
-const book4 = new Book("House of the Spirits", "Isabel Allende", 372, true)
-
 const myLibrary = new Library();
+const bookListView = new viewBookList(".books")
+const libraryController = new LibraryController(myLibrary, bookListView);
 
-myLibrary.addBookToLibrary(book1)
-myLibrary.addBookToLibrary(book2)
-myLibrary.addBookToLibrary(book3)
-myLibrary.addBookToLibrary(book4)
-
-const bookDiv = new viewBookList(".books")
-bookDiv.displayBooks(myLibrary);
+myLibrary.initializeSampleBooks();
+bookListView.displayBooks(myLibrary);
