@@ -103,21 +103,23 @@ class viewBookList {
         const closeBtn = document.createElement("button");
         closeBtn.className = "remove";
         closeBtn.innerHTML = "Remove";
-        closeBtn.onclick= removeScreenBook;
+        closeBtn.onclick= this.removeScreenBook;
         return closeBtn
+    }
+
+    // Find the parent of the button clicked
+    // Remove from both html and array using data-index
+    removeScreenBook(event) {
+        const bookElement = event.target.closest("li")
+        bookElement.remove();
+        myLibrary.removeBook(Number(bookElement.dataset.index));
     }
 }
 
 
 // Removing books functions
 
-// Find the parent of the button clicked
-// Remove from both html and array using data-index
-function removeScreenBook(event) {
-    const bookElement = event.target.closest("li")
-    bookElement.remove();
-    myLibrary.removeBook(Number(bookElement.dataset.index));
-}
+
 
 // Library Controller class
 class LibraryController {
