@@ -1,5 +1,34 @@
+class Library {
+    constructor() {
+        this.bookList = []
+    }
 
-const myLibrary = []
+    // Features for storing books in array
+    addBookToLibrary(book) {
+        if (this.bookList.length > 0) {
+            book.index = this.bookList.length;
+        }
+        this.bookList.push(book);
+    }
+
+    getBookList() {
+        return this.bookList;
+    }
+
+    removeBook(index) {
+        for (let i=0; i < this.length; i ++) {
+            if (this.bookList[i].index === index) {
+                this.bookList.splice(i, 1);
+                return 1;
+            }
+        }
+    }
+
+    showBookList() {
+        console.log(this.bookList);
+    }
+}
+
 const bookList = document.querySelector(".books")
 
 // Book constructor
@@ -19,14 +48,6 @@ function Book(title, author, pages, hasRead) {
     }
 }
 
-// Features for storing books in array
-function addBookToLibrary(book) {
-    if (myLibrary.length > 0) {
-        book.index = myLibrary.length;
-    }
-    myLibrary.push(book);
-}
-
 function readBook(hasRead) {
     readStatus = "not read it yet";
     if (hasRead) {
@@ -38,7 +59,7 @@ function readBook(hasRead) {
 
 // Functions for updating the GUI
 function displayBooks() {
-    myLibrary.forEach(book => {
+    myLibrary.getBookList().forEach(book => {
         makeBookDisplay(book);
     });
 }
@@ -78,16 +99,7 @@ function makeButtonDisplay() {
 function removeBook(event) {
     const bookElement = event.target.closest("li")
     bookElement.remove();
-    removeByIndex(Number(bookElement.dataset.index));
-}
-
-function removeByIndex(index) {
-    for (let i=0; i < myLibrary.length; i ++) {
-        if (myLibrary[i].index === index) {
-            myLibrary.splice(i, 1);
-            return 1;
-        }
-    }
+    myLibrary.removeBook(Number(bookElement.dataset.index));
 }
 
 // Dialog Add popup
@@ -106,7 +118,7 @@ confirmBtn.addEventListener("click", (event) => {
 
     const book = new Book(document.querySelector("#title").value,document.querySelector("#author").value, 
         document.querySelector("#pages").value, document.querySelector("#has-read").value);
-    addBookToLibrary(book);
+    myLibrary.addBookToLibrary(book);
     makeBookDisplay(book);
     formDialog.close();
 }); 
@@ -118,9 +130,11 @@ const book2 = new Book("Grapes of Wrath", "John Steinbeck", 487, false)
 const book3 = new Book("Crime and Punishment", "Fyodor Dostoevsky", 423, true)
 const book4 = new Book("House of the Spirits", "Isabel Allende", 372, true)
 
-addBookToLibrary(book1)
-addBookToLibrary(book2)
-addBookToLibrary(book3)
-addBookToLibrary(book4)
+const myLibrary = new Library();
+
+myLibrary.addBookToLibrary(book1)
+myLibrary.addBookToLibrary(book2)
+myLibrary.addBookToLibrary(book3)
+myLibrary.addBookToLibrary(book4)
 
 displayBooks();
